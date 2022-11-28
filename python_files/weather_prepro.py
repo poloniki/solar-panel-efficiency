@@ -37,7 +37,7 @@ def weather_df(lat:float,
     return weather_df
 
 
-def preprocess_weather_df(df:pd.DataFrame) -> pd.DataFrame:
+def preprocess_weather_df(weather_df:pd.DataFrame) -> pd.DataFrame:
     """
     This function aggregates all the rows by summing or averaging them.
     """
