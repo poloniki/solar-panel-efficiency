@@ -8,4 +8,4 @@ import pandas as pd
 
 if __name__ == "__main__":
     df = get_dataframe_option2().head(20)
-    print(supervised_df(df,2017))
+    print(supervised_df(df,2017,supervised=True))
