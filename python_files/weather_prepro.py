@@ -72,4 +72,15 @@ def aggregates_df(weather_df:pd.DataFrame) -> pd.DataFrame:
                               'winddirection_10m_dominant',
                               'shortwave_radiation_sum',
                               'et0_fao_evapotranspiration']
-    return weather_df_agg
+    # Return as float type
+    return weather_df_agg.astype({"temperature_2m_max": float,
+                                  "temperature_2m_min":float,
+                                  "precipitation_sum":float,
+                                  "rain_sum":float,
+                                  "snowfall_sum":float,
+                                  "precipitation_hours":float,
+                                  "windspeed_10m_max":float,
+                                  "windgusts_10m_max":float,
+                                  "winddirection_10m_dominant":float,
+                                  "shortwave_radiation_sum":float,
+                                  "et0_fao_evapotranspiration":float})
