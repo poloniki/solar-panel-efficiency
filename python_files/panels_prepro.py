@@ -45,7 +45,7 @@ def get_dataframe_option2() :
 # real production for the years(2018, 2019)
 
 
-def get_dataframe_option3 () :
+def get_dataframe_option3() :
     df = pd.read_csv(data_path, low_memory=False)
     df.drop(columns=['gppd_idnr', 'capacity_mw',
         'other_fuel1', 'other_fuel2',

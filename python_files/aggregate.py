@@ -78,7 +78,7 @@ def df_to_model(df:pd.DataFrame,
 
                 list_ = aggregates_df(weather_df(lat=latitude,
                                                 lon=longitude,
-                                                year=year))
+                                                year=r["year"])) # ! CAUTION
                 list_.append(target)
                 count = 0
                 for k,v in dict_.items():
