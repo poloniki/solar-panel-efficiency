@@ -9,7 +9,7 @@ import time
 def df_to_model(df:pd.DataFrame,
                         year:int,
                         supervised:bool) -> pd.DataFrame:
-    if supervised == True:
+    if supervised == False:
         dict_ ={'year': [],
                 'latitude': [],
                 'longitude': [],
@@ -49,7 +49,7 @@ def df_to_model(df:pd.DataFrame,
         return pd.DataFrame(dict_)
 
 
-    if supervised == False:
+    if supervised == True:
         dict_ ={'year':[],
                 'latitude': [],
                 'longitude': [],
@@ -80,13 +80,11 @@ def df_to_model(df:pd.DataFrame,
                                                 lon=longitude,
                                                 year=year))
                 list_.append(target)
-                print(list_)
                 count = 0
                 for k,v in dict_.items():
                     dict_[k].append(list_[count])
                     count +=1
                 loading +=1
-                print("📖 Appended to dict")
             except:
                 time.sleep(5)
                 continue
