@@ -2,6 +2,7 @@ from panels_prepro import get_dataframe_option1
 from weather_prepro import weather_df, aggregates_df
 import pandas as pd
 import numpy as np
+import time
 #from sklearn.pipeline import make_pipeline
 #from sklearn.preprocessing import MinMaxScaler
 
@@ -24,18 +25,22 @@ def panels_weather_dict(df:pd.DataFrame,
             'et0_fao_evapotranspiration':[]}
     loading=1
     for i, r in df.iterrows():
-        print(f"💭 Computing {loading}/{df.shape[0]} row.")
+        try:
+            print(f"💭 Computing {loading}/{df.shape[0]} row.")
 
-        latitude = r["latitude"]
-        longitude = r["longitude"]
+            latitude = r["latitude"]
+            longitude = r["longitude"]
 
-        list_ = aggregates_df(weather_df(lat=latitude,
-                                         lon=longitude,
-                                         year=year))
-        count = 0
-        for k,v in dict_.items():
-            dict_[k].append(list_[count])
-            count +=1
+            list_ = aggregates_df(weather_df(lat=latitude,
+                                                lon=longitude,
+                                                year=year))
+            count = 0
+            for k,v in dict_.items():
+                dict_[k].append(list_[count])
+                count +=1
 
-        loading +=1
+            loading +=1
+        except:
+            time.sleep(5)
+            continue
     return pd.DataFrame(dict_)
