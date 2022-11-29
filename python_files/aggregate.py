@@ -26,26 +26,28 @@ def df_to_model(df:pd.DataFrame,
                 'shortwave_radiation_sum':[],
                 'et0_fao_evapotranspiration':[]
                 }
-        loading=1
-        for i, r in df.iterrows():
-            try:
-                print(f"💭 Computing {loading}/{df.shape[0]} row.")
+        for y in range(5):
+            print(f"Year {year+y}")
+            loading=1
+            for i, r in df.iterrows():
+                try:
+                    print(f"💭 Computing {loading}/{df.shape[0]} row.")
 
-                latitude = r["latitude"]
-                longitude = r["longitude"]
+                    latitude = r["latitude"]
+                    longitude = r["longitude"]
 
-                list_ = aggregates_df(weather_df(lat=latitude,
-                                                    lon=longitude,
-                                                    year=year))
-                count = 0
-                for k,v in dict_.items():
-                    dict_[k].append(list_[count])
-                    count +=1
+                    list_ = aggregates_df(weather_df(lat=latitude,
+                                                        lon=longitude,
+                                                        year=year+y))
+                    count = 0
+                    for k,v in dict_.items():
+                        dict_[k].append(list_[count])
+                        count +=1
 
-                loading +=1
-            except:
-                time.sleep(5)
-                continue
+                    loading +=1
+                except:
+                    time.sleep(5)
+                    continue
         return pd.DataFrame(dict_)
 
 
