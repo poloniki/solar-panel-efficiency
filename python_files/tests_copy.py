@@ -10,3 +10,4 @@ if __name__ == "__main__":
     # UNSUPERVISED MODEL WITH 5 YEARS
     df_unsup = get_dataframe_option1()
     (df_to_model(df_unsup,2015, supervised=False)).to_csv("10y_unsupervised_df.csv")
+    print("--------------COMPLETED UNSUPERVISED MODEL ----------------")
