@@ -7,11 +7,12 @@ from termcolor import colored
 from itertools import cycle
 import time
 
+# proxy = pd.read_csv('proxies/proxies.csv')
+
 ##http request to api
 ##change timeout if u do not want to wait for the proxy a lot
 def get_data(lat, lon, proxy , timeout = 5):
     url = f"https://apps.solargis.com/api/data/lta?loc={lat},{lon}"
-
     requests.request.headers = {
         "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
     }
@@ -38,10 +39,7 @@ def get_proxies():
     return proxies
 
 ##beware proxies fail sometimes..only ones i found functional for free at least
-proxies = get_proxies()
-proxies
-
-
+# proxies = get_proxies()
 
 #infinite loop around proxies
 prox_gen = cycle(proxies)
