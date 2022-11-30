@@ -111,7 +111,7 @@ def add_target(df:pd.DataFrame) -> pd.DataFrame:
 
             list_ = monthly_pvwatts_data(lat=latitude,
                                      lon=longitude,
-                                     proxy=XXXX)
+                                     proxy="208.82.61.66:3128")
 
         except:
             time.sleep(5)

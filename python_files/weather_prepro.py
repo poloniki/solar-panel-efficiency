@@ -110,12 +110,10 @@ def monthly_weather_df(lat:float,
     weather_data = requests.get(weather_url, params=weather_params)
     weather_dict = weather_data.json()
     weather_df = pd.DataFrame(weather_dict["daily"])
-    weather_df["latitude"] = lat
-    weather_df["longitude"] = lon
     weather_df["timestamp"] = year
     weather_df["month"] = weather_df["time"].str[5:7]
 
-    return weather_df.groupby(by="month").agg({"temperature_2m_max":"mean",
+    output = weather_df.groupby(by="month").agg({"temperature_2m_max":"mean",
                                                 "temperature_2m_min":"mean",
                                                 "precipitation_sum":"sum",
                                                 "rain_sum":"sum",
@@ -127,10 +125,16 @@ def monthly_weather_df(lat:float,
                                                 "shortwave_radiation_sum":"sum",
                                                 "et0_fao_evapotranspiration":"sum"
                                                 })
+    output["latitude"] = lat
+    output["longitude"] = lon
+    return output
 
 
 
-def monthly_pvwatts_data(lat,lon,proxy,timeout=5):
+def monthly_pvwatts_data(lat,
+                         lon,
+                         proxy,
+                         timeout=5):
     url = 'https://developer.nrel.gov/api/pvwatts/v6.json?api_key=IAwRTEmh1TANaK6K6IwN65trPMdCydwXB0lPcg6f'
     params = {"lat":lat,
               "lon":lon,
@@ -144,5 +148,10 @@ def monthly_pvwatts_data(lat,lon,proxy,timeout=5):
     technical_data = requests.get(url, params=params, timeout=timeout,
                                   proxies={"http":proxy,
                                            "https":proxy})
-
-    return technical_data.json().get("outputs")
+    response = technical_data.json().get("outputs")
+    columns = ["ac_monthly","poa_monthly", "solrad_monthly", "dc_monthly"]
+    df = pd.DataFrame([response.get(each) for each in columns]).T
+    df.columns = columns
+    df["latitude"] = lat
+    df["longitude"] = lon
+    return df
