@@ -76,7 +76,7 @@ def aggregates_df(weather_df:pd.DataFrame) -> pd.DataFrame:
     return aggregates_list
 
 
-def montly_weather_df(lat:float,
+def monthly_weather_df(lat:float,
               lon:float,
               year:int, # "YYYY"
               )-> pd.DataFrame:
@@ -113,12 +113,22 @@ def montly_weather_df(lat:float,
     weather_df["latitude"] = lat
     weather_df["longitude"] = lon
     weather_df["timestamp"] = year
+    weather_df["month"] = weather_df["time"].str[5:7]
 
-    weather_df["time"]= pd.to_datetime(weather_df["time"])
+    return weather_df.groupby(by="month").agg({"temperature_2m_max":"mean",
+                                                "temperature_2m_min":"mean",
+                                                "precipitation_sum":"sum",
+                                                "rain_sum":"sum",
+                                                "snowfall_sum":"sum",
+                                                "precipitation_hours":"sum",
+                                                "windspeed_10m_max":"mean",
+                                                "windgusts_10m_max":"mean",
+                                                "winddirection_10m_dominant":"mean",
+                                                "shortwave_radiation_sum":"sum",
+                                                "et0_fao_evapotranspiration":"sum"
+                                                })
 
-    output = weather_df.groupby(by=pd.DatetimeIndex(weather_df["time"]).month)
 
-    return output
 
 def monthly_pvwatts_data(lat,lon,proxy,timeout=5):
     url = 'https://developer.nrel.gov/api/pvwatts/v6.json?api_key=IAwRTEmh1TANaK6K6IwN65trPMdCydwXB0lPcg6f'
