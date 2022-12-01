@@ -8,5 +8,6 @@ import pandas as pd
 import datetime
 
 if __name__ == "__main__":
-    df = get_dataframe_option1()
-    general_monthly_df(df, 2017).to_csv("monthly_general_weather_conditions.csv")
+    df = pd.read_csv("data/listado-longitud-latitud-municipios-espana.csv",
+                     encoding_errors="replace")
+    general_monthly_df(df,2017).to_csv("data_SPAIN/SPAIN_monthly_2017_target_metrics.csv")

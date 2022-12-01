@@ -1,5 +1,5 @@
 from panels_prepro import get_dataframe_option1
-from weather_prepro import weather_df, aggregates_df, monthly_pvwatts_data
+from weather_prepro import weather_df,monthly_weather_df, aggregates_df, monthly_pvwatts_data
 import pandas as pd
 import numpy as np
 import time
@@ -9,9 +9,13 @@ import logging
 #from sklearn.pipeline import make_pipeline
 #from sklearn.preprocessing import MinMaxScaler
 
-def df_to_model(df:pd.DataFrame,
+# Yearly general weather conditions
+def general_yearly_df(df:pd.DataFrame,
                         year:int,
                         supervised:bool) -> pd.DataFrame:
+    """
+    Scrapes yearly general weather conditions for each lat-lon
+    """
     if supervised == False:
         dict_ ={'year': [],
                 'latitude': [],
@@ -99,8 +103,39 @@ def df_to_model(df:pd.DataFrame,
         print("Supervised or Unsupervised not specified.")
         return KeyError
 
+# Monthly general weather conditions
+def general_monthly_df(df:pd.DataFrame,
+                        year:int,
+                        ) -> pd.DataFrame:
+    """
+    Scrapes yearly general weather conditions for each lat-lon
+    """
+    data = pd.DataFrame()
+    last_succesful_index = 0
+    for idx , row in df.iloc[last_succesful_index:].iterrows():
+        lat = row["latitude"]
+        lon = row["longitude"]
+        print("*"*50 + f"\n ITERATION={idx+1}| Fetching data for lat={lat:.2f},lon={lon:.2f}")
+        try:
+            ##send HTTP request
+            new_data = monthly_weather_df(lat=lat,lon=lon,year=year)
 
+            ##store data
+            new_data["latitude"] = lat
+            new_data["longitude"] = lon
+            data = pd.concat([data, new_data], axis=0)
+            print(f"🤑 Row added !")
+        except:
+            time.sleep(5)
+            continue
+    return data
+
+
+# Monthly technical weather conditions
 def monthly_df_to_model(df:pd.DataFrame):
+    """
+    Scrapes monthly technical features for each latitude-longitude
+    """
     # PROXIES
     proxies = ['208.82.61.66:3128',
     '134.238.252.143:8080',
@@ -116,10 +151,12 @@ def monthly_df_to_model(df:pd.DataFrame):
 
 
     last_succesful_index = 0
+    count = 0
     for idx , row in df.iloc[last_succesful_index:].iterrows():
         lat = row["latitude"]
         lon = row["longitude"]
         print("*"*50 + f"\n ITERATION={idx+1}| Fetching data for lat={lat:.2f},lon={lon:.2f}")
+        print(f"💭 Computing {count}/{df.shape[0]} row.")
         #start by using proxies one-by-one until one succeeds
         ## we start by using proxy one
         failures = 0
@@ -130,18 +167,18 @@ def monthly_df_to_model(df:pd.DataFrame):
                 new_data = monthly_pvwatts_data(lat,lon,proxy)
 
                 ##store data
-                data["latitude"] = lat
-                data["longitude"] = lon
+                new_data["latitude"] = lat
+                new_data["longitude"] = lon
                 data = pd.concat([data, new_data], axis=0)
-                logging.info("🤑 Row added !")
-
+                print(f"🤑 Row added !")
+                count =+1
                 ##break the infinite loop and continue to next (x,y)
                 break
             except Exception as e:
-                logging.warning(f"PROXY FAILED! Error: {e}","red")
+                print(colored(f"PROXY FAILED!","red"))
                 ##counting failed attempts
                 failures += 1
-                logging.warning(f"TOTAL FAILURES={failures}!")
+                print(colored(f"TOTAL FAILURES={failures}!"))
 
                 ##if we tried all proxies and none succeeded break loop
                 ##and terminate
@@ -151,4 +188,5 @@ def monthly_df_to_model(df:pd.DataFrame):
                 else:
                     print("RETRYING...")
                     continue
+
     return data
