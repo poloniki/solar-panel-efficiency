@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import pydeck as pdk
+from urllib.request import urlopen
+import json
+
 
 st.set_page_config(layout="wide")
 
@@ -26,7 +29,13 @@ col1.metric("Solar Stations", "14", option)
 col2.metric("Solar Energy produced (GWh)", "1234.5", option)
 col3.metric("Non-renewable energy produced (GWh)", "67890.5", option)
 
+
+# MAP WITH BORDERS
+with urlopen('https://raw.githubusercontent.com/deldersveld/topojson/master/countries/spain/spain-province.json')\
+    as response:
+    Spain = json.load(response)
 # MAP
+spain_provinces = pd.read_csv("../../raw_data/provincias.csv")
 solar_stations = pd.read_csv("../../raw_data/Spain_energy_df_2017.csv")
 map_solar_stations = solar_stations[solar_stations["primary_fuel"]=="Solar"]
 
@@ -54,16 +63,16 @@ fig.update(layout_coloraxis_showscale=False)
 fig.update_layout(
     margin=dict(l=1, r=1, t=1, b=1),
     title_y=0.95
-
 )
-
 # PLOTLY FIG2
 c1,c2 = st.columns(2)
 fig2 = px.scatter_geo(map_solar_stations,lat='lat',lon='lon',
                      color="Solar Generation (2017)",
                      template="simple_white",
                      color_continuous_scale=px.colors.sequential.Blues,
-                     title="Top 20 places to locate a new station"
+                     title="Top 20 places to locate a new station",
+                     #locations=spain_provinces["Provincia"],
+                     #geojson=Spain
                      )
 fig2.update_geos(
     center=dict(lon=-3.7038, lat=40.4168),
@@ -82,7 +91,6 @@ fig2.update_layout(
     margin=dict(l=1, r=1, t=1, b=1),
     title_y=0.95
 )
-
 
 c1.plotly_chart(fig, use_container_width =True)
 c2.plotly_chart(fig2, use_container_width =True)
