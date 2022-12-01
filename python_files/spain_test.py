@@ -10,4 +10,4 @@ import datetime
 if __name__ == "__main__":
     # proxies
     df = pd.read_csv("data/listado-longitud-latitud-municipios-espana.csv")
-    monthly_df_to_model(df).to_csv("SPAIN_monthly_2017_target_metrics.csv")
+    monthly_df_to_model(df).to_csv("data_SPAIN/SPAIN_monthly_2017_target_metrics.csv")

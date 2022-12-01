@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import pydeck as pdk
 
+st.set_page_config(layout="wide")
 
 # TITLE
 st.markdown("""
@@ -25,54 +26,17 @@ col1.metric("Solar Stations", "14", option)
 col2.metric("Solar Energy produced (GWh)", "1234.5", option)
 col3.metric("Non-renewable energy produced (GWh)", "67890.5", option)
 
-# ST.MAP
-#map_data = pd.read_csv("../../raw_data/listado-longitud-latitud-municipios-espana.csv")
+# MAP
 solar_stations = pd.read_csv("../../raw_data/Spain_energy_df_2017.csv")
 map_solar_stations = solar_stations[solar_stations["primary_fuel"]=="Solar"]
 
-st.map(map_solar_stations)
-
-
-# PYDECK
-
-layer2 = pdk.Layer(
-            'ScatterplotLayer',
-            map_solar_stations,
-            get_position=['lon', 'lat'],
-            auto_highlight=True,
-            get_color='[200, 30, 0, 160]',
-            get_radius=10000)
-
-layer = pdk.Layer(
-    'HexagonLayer',  # `type` positional argument is here
-    map_solar_stations,
-    get_position=['lon','lat'],
-    auto_highlight=True,
-    elevation_scale=50,
-    radius=10000,
-    pickable=True,
-    elevation_range=[0, 3000],
-    extruded=True,
-    coverage=1)
-
-view_state = pdk.ViewState(
-        longitude=-3.7038,
-        latitude=40.4168,
-        zoom=6,
-        min_zoom=5,
-        max_zoom=15,
-        pitch=40.5,
-        bearing=-27.36)
-
-r = pdk.Deck(layers=[layer,layer2], initial_view_state=view_state)
-st.pydeck_chart(r)
-
-# PLOTLY
-
+# PLOTLY FIG
+c1,c2 = st.columns(2)
 fig = px.scatter_geo(map_solar_stations,lat='lat',lon='lon',
-                     color="estimated_generation_gwh_2017",
+                     color="Solar Generation (2017)",
                      template="simple_white",
-                     color_continuous_scale=px.colors.sequential.Greens
+                     color_continuous_scale=px.colors.sequential.Greens,
+                     title="Solar Stations in Spain by energy production (2017)"
                      )
 fig.update_geos(
     center=dict(lon=-3.7038, lat=40.4168),
@@ -82,11 +46,43 @@ fig.update_geos(
     showsubunits=True, subunitcolor="White",
     showframe=False, showland=True,
 )
-
 fig.update_traces(marker=dict(size=12,
                               line=dict(width=1,
                                         color='DarkSlateGrey')),
                   selector=dict(mode='markers'))
+fig.update(layout_coloraxis_showscale=False)
+fig.update_layout(
+    margin=dict(l=1, r=1, t=1, b=1),
+    title_y=0.95
+
+)
+
+# PLOTLY FIG2
+c1,c2 = st.columns(2)
+fig2 = px.scatter_geo(map_solar_stations,lat='lat',lon='lon',
+                     color="Solar Generation (2017)",
+                     template="simple_white",
+                     color_continuous_scale=px.colors.sequential.Blues,
+                     title="Top 20 places to locate a new station"
+                     )
+fig2.update_geos(
+    center=dict(lon=-3.7038, lat=40.4168),
+    lataxis_range=[1,7], lonaxis_range=[35, 45],
+    visible=False, resolution=50, scope="europe",
+    showcountries=True, countrycolor="Black",
+    showsubunits=True, subunitcolor="White",
+    showframe=False, showland=True,
+)
+fig2.update_traces(marker=dict(size=12,
+                              line=dict(width=1,
+                                        color='DarkSlateGrey')),
+                  selector=dict(mode='markers'))
+fig2.update(layout_coloraxis_showscale=False)
+fig2.update_layout(
+    margin=dict(l=1, r=1, t=1, b=1),
+    title_y=0.95
+)
 
 
-st.plotly_chart(fig)
+c1.plotly_chart(fig, use_container_width =True)
+c2.plotly_chart(fig2, use_container_width =True)
