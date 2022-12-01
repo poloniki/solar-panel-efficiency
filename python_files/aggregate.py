@@ -131,7 +131,7 @@ def general_monthly_df(df:pd.DataFrame,
     return data
 
 
-# Monthly technical weather conditions
+# (proxies) Monthly technical weather conditions
 def monthly_df_to_model(df:pd.DataFrame):
     """
     Scrapes monthly technical features for each latitude-longitude
