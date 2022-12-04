@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://data.opendatasoft.com/explore/dataset/georef-spain-municipio%40public/export/?disjunctive.acom_code&disjunctive.acom_name&disjunctive.prov_code&disjunctive.prov_name&disjunctive.mun_code&disjunctive.mun_name
+HostUrl=https://data.opendatasoft.com/explore/dataset/georef-spain-municipio@public/download/?format=geojson&timezone=Europe/Berlin&lang=en
